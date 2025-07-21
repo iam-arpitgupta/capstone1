@@ -94,4 +94,4 @@ target/
 .mypy_cache/
 *.csv
 data/*
-local_s3/*
+local_s3
