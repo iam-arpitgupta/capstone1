@@ -25,11 +25,11 @@ def load_params(params_path: str) -> dict:
         logging.error('Unexpected error: %s', e)
         raise
 
-def load_data(data_path: str) -> pd.DataFrame:
+def load_data(data_url: str) -> pd.DataFrame:
     """Load data from a CSV file."""
     try:
-        df = pd.read_csv(data_path)
-        logging.info('Data loaded from %s', data_path)
+        df = pd.read_csv(data_url)
+        logging.info('Data loaded from %s', data_url)
         return df
     except pd.errors.ParserError as e:
         logging.error('Failed to parse the CSV file: %s', e)
@@ -55,7 +55,7 @@ def main():
         # s3 = s3_connection.s3_operations(bucket_name, aws_access_key, aws_secret_key)
         # df = s3.fetch_file_from_s3(FILE_KEY)
 
-        df = load_data(data_path="/Users/arpitgupta/Documents/new-project/capstone1/notebooks/creditcard.csv")
+        df = load_data(data_url="https://raw.githubusercontent.com/vikashishere/Datasets/refs/heads/main/creditcard.csv")
 
         if df is None:
             logging.error("Data fetching failed, received None. Exiting.")
