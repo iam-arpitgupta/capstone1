@@ -19,29 +19,29 @@ logger = logging.getLogger(__name__)
 # Below code block is for production use
 # # -------------------------------------------------------------------------------------
 # # Set up DagsHub credentials for MLflow tracking
-# dagshub_token = os.getenv("CAPSTONE_TEST")
-# if not dagshub_token:
-#     raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
+dagshub_token = os.getenv("CAPSTONE_TEST")
+if not dagshub_token:
+    raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
 
-# os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-# os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-# dagshub_url = "https://dagshub.com"
-# repo_owner = "thearpitgupta2003"
-# repo_name = "capstone1"
+dagshub_url = "https://dagshub.com"
+repo_owner = "thearpitgupta2003"
+repo_name = "capstone1"
 # # Set up MLflow tracking URI
-# mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 # -------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------
 # Below code block is for loacl use
-# ----------------------------------------------
-MLFLOW_TRACKING_URI = "https://dagshub.com/thearpitgupta2003/capstone1.mlflow"
+# # ----------------------------------------------
+# MLFLOW_TRACKING_URI = "https://dagshub.com/thearpitgupta2003/capstone1.mlflow"
 
-# # Set up MLflow tracking
-mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-dagshub.init(repo_owner="thearpitgupta2003", repo_name="capstone1", mlflow=True)
+# # # Set up MLflow tracking
+# mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+# dagshub.init(repo_owner="thearpitgupta2003", repo_name="capstone1", mlflow=True)
 
 
 
@@ -56,13 +56,13 @@ PREPROCESSOR_PATH = "models/power_transformer.pkl"
 app = Flask(__name__)
 
 
-# Custom Metrics for Monitoring
-registry = CollectorRegistry()
-REQUEST_COUNT = Counter("app_request_count", "Total requests", ["method", "endpoint"], registry=registry)
-REQUEST_LATENCY = Histogram("app_request_latency_seconds", "Latency of requests", ["endpoint"], registry=registry)
-PREDICTION_COUNT = Counter("model_prediction_count", "Count of predictions", ["prediction"], registry=registry)
+# # Custom Metrics for Monitoring
+# registry = CollectorRegistry()
+# REQUEST_COUNT = Counter("app_request_count", "Total requests", ["method", "endpoint"], registry=registry)
+# REQUEST_LATENCY = Histogram("app_request_latency_seconds", "Latency of requests", ["endpoint"], registry=registry)
+# PREDICTION_COUNT = Counter("model_prediction_count", "Count of predictions", ["prediction"], registry=registry)
 
-# ----------------------------------------------
+# # ----------------------------------------------
 # Load Model and Preprocessor
 # ----------------------------------------------
 def get_latest_model_version(model_name):
@@ -128,7 +128,7 @@ def preprocess_input(data):
 # ----------------------------------------------
 @app.route("/", methods=["GET", "POST"])
 def home():
-    REQUEST_COUNT.labels(method="GET", endpoint="/").inc()
+    # REQUEST_COUNT.labels(method="GET", endpoint="/").inc()
     start_time = time.time()
     prediction = None
     input_values = [""] * len(FEATURE_NAMES)  # Empty placeholders for form
@@ -155,13 +155,13 @@ def home():
             except Exception as e:
                 prediction = f"Processing Error: {e}"
 
-    REQUEST_LATENCY.labels(endpoint="/").observe(time.time() - start_time)
+    # REQUEST_LATENCY.labels(endpoint="/").observe(time.time() - start_time)
     return render_template("index.html", result=prediction, csv_input=",".join(map(str, input_values)))
 
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    REQUEST_COUNT.labels(method="POST", endpoint="/predict").inc()
+    # REQUEST_COUNT.labels(method="POST", endpoint="/predict").inc()
     start_time = time.time()
     csv_input = request.form.get("csv_input", "").strip()
     if not csv_input:
