@@ -1,0 +1,104 @@
+FIRST INSTALL THE AWS CLI 
+and check for version 
+
+aws --version 
+
+
+# Using Homebrew
+brew install awscli
+
+# Or using curl
+curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+sudo installer -pkg AWSCLIV2.pkg -target /
+
+
+---------------------------------XXXXXX-------------------
+
+
+THEN FOR THE kubectl WE GONNA NEED ALL OF THESE COMMANDS 
+
+download 
+curl -LO "https://dl.k8s.io/release/v1.28.2/bin/darwin/amd64/kubectl"
+
+check current location 
+pwd 
+
+
+Make kubectl executable and move to PATH:
+
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+
+Test if kubectl is properly installed:
+kubectl version --client
+
+
+
+Zsh-specific considerations:
+If /usr/local/bin isn't in your PATH, you can add it to your zsh profile:
+
+echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+Check your current PATH:
+echo $PATH
+
+
+
+-----------------------XXXXX---------------------
+
+
+
+NOW DOWNLOAD THE EKSCTL
+ON Homebrew
+
+# Install Homebrew if you don't have it
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install eksctl
+brew tap weaveworks/tap
+brew install weaveworks/tap/eksctl
+
+# Verify installation
+eksctl version
+
+
+To verify everything is working:
+
+which eksctl
+eksctl version
+
+
+RUN ALL THESE COMMANDS AFTER INSTALLATION 
+
+39. Create an EKS cluster:
+    eksctl create cluster --name flask-app-cluster --region us-east-1 --nodegroup-name flask-app-nodes --node-type t3.small --nodes 1 --nodes-min 1 --nodes-max 1 --managed
+
+40. Update kubectl Config(Once the cluster is created, eksctl will automatically update your kubectl config file. However, you can verify and set it manually using:)
+aws eks --region us-east-1 update-kubeconfig --name flask-app-cluster (This ensures your kubectl is pointing to the correct cluster.)
+
+41. Check EKS Cluster Configuration Ensure you can access your EKS cluster by running
+    aws eks list-clusters
+
+42. Delete cluster(optional):
+    eksctl delete cluster --name flask-app-cluster --region us-east-1
+
+    Also, verify cluster deletion:
+    eksctl get cluster --region us-east-1
+
+43. Verify the cluster status:
+    aws eks --region us-east-1 describe-cluster --name flask-app-cluster --query "cluster.status"
+
+
+
+
+44. Check cluster connectivity:
+kubectl get nodes
+
+45. Check the namespaces:
+kubectl get namespaces
+
+46. Verify the deployment:
+kubectl get pods
+kubectl get svc
